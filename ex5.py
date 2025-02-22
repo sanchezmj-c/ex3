@@ -52,11 +52,6 @@ fig2.update_layout(
     showlegend=False  # Ocultar la leyenda
 )
 
-# Crear el gráfico de dispersión (scatter plot) con Plotly
-fig3 = px.scatter(df, x="weight", y="mpg", color="origin",  # Diferenciar por origen
-                  color_discrete_sequence=px.colors.qualitative.Set1,
-                  size="horsepower", title="Relación entre Peso y MPG (Color por Origen)")
-
 ## Arrange the plots in a grid layout
 col1, col2 = st.columns(2)  # Create 2 columns
 
@@ -65,6 +60,3 @@ with col1:
 
 with col2:
     st.plotly_chart(fig2, use_container_width=True)  # Second plot in second column
-
-# Add the third plot in a full-width row below
-st.plotly_chart(fig3, use_container_width=True)
