@@ -1,3 +1,9 @@
+import streamlit as st
+import plotly.express as px
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+import seaborn as sns
 # Load Sample Data
 df = sns.load_dataset('mpg')
 corr = df.corr(numeric_only=True)
