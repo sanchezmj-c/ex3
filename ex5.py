@@ -1,24 +1,19 @@
 import streamlit as st
 import plotly.express as px
-import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import seaborn as sns
+
 # Load Sample Data
 df = sns.load_dataset('mpg')
+
+# Calcular la matriz de correlación
 corr = df.corr(numeric_only=True)
 corr_text = np.round(corr, 2).astype(str)  # Redondear y convertir a texto
 
 # Streamlit App Title
 st.title("📊 Interactive Dashboard with Multiple Plots")
 
-# Create a sidebar filter for selecting a year
-#selected_year = st.sidebar.slider("Select Year:", int(df["model_year"].min()), int(df["model_year"].max()), int(df["model_year"].min()))
-
-# Filter data based on the selected year
-#filtered_df = df[df.model_year == selected_year]
-
-# Create three different plots
 # Crear el mapa de calor interactivo con Plotly
 fig1 = px.imshow(
     corr,  # Matriz de correlación
@@ -37,6 +32,7 @@ fig1.update_traces(
     hovertemplate="<b>Variable X:</b> %{x}<br><b>Variable Y:</b> %{y}<br><b>Correlación:</b> %{z:.2f}<extra></extra>"
 )
 
+# Crear el gráfico de enjambre (swarm plot) con Plotly
 fig2 = px.strip(
     df,  # DataFrame
     x='cylinders',  # Eje X: número de cilindros
@@ -56,9 +52,10 @@ fig2.update_layout(
     showlegend=False  # Ocultar la leyenda
 )
 
-fig3 = px.scatter(filtered_df, x="weight", y="mpg", color_discrete_sequence=px.colors.qualitative.Set1,
+# Crear el gráfico de dispersión (scatter plot) con Plotly
+fig3 = px.scatter(df, x="weight", y="mpg", color="origin",  # Diferenciar por origen
+                  color_discrete_sequence=px.colors.qualitative.Set1,
                   size="horsepower", title="Relación entre Peso y MPG (Color por Origen)")
-
 
 ## Arrange the plots in a grid layout
 col1, col2 = st.columns(2)  # Create 2 columns
