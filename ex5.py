@@ -7,10 +7,10 @@ corr_text = np.round(corr, 2).astype(str)  # Redondear y convertir a texto
 st.title("📊 Interactive Dashboard with Multiple Plots")
 
 # Create a sidebar filter for selecting a year
-selected_year = st.sidebar.slider("Select Year:", int(df["model_year"].min()), int(df["model_year"].max()), int(df["model_year"].min()))
+#selected_year = st.sidebar.slider("Select Year:", int(df["model_year"].min()), int(df["model_year"].max()), int(df["model_year"].min()))
 
 # Filter data based on the selected year
-filtered_df = df[df.model_year == selected_year]
+#filtered_df = df[df.model_year == selected_year]
 
 # Create three different plots
 # Crear el mapa de calor interactivo con Plotly
@@ -31,18 +31,37 @@ fig1.update_traces(
     hovertemplate="<b>Variable X:</b> %{x}<br><b>Variable Y:</b> %{y}<br><b>Correlación:</b> %{z:.2f}<extra></extra>"
 )
 
-fig2 = px.bar(filtered_df, x="origin", y="mpg", color="origin", title="Consumo Promedio de Combustible por Región de Origen")
+fig2 = px.strip(
+    df,  # DataFrame
+    x='cylinders',  # Eje X: número de cilindros
+    y='horsepower',  # Eje Y: caballos de fuerza
+    color='cylinders',  # Colorear por número de cilindros
+    color_discrete_sequence=px.colors.qualitative.Plotly,  # Usar la paleta Plotly
+    title='Distribución de Potencia según Número de Cilindros',  # Título
+    labels={'cylinders': 'Número de Cilindros', 'horsepower': 'Caballos de Fuerza (hp)'}  # Etiquetas
+)
 
-fig3= px.scatter(filtered_df, x="horsepower", y="mpg", color="origin", title="Relación entre Caballos de Fuerza y Millas por Galón")
+# Personalizar el diseño del gráfico
+fig2.update_layout(
+    width=800,  # Ancho del gráfico
+    height=500,  # Alto del gráfico
+    xaxis_title='Número de Cilindros',  # Título del eje X
+    yaxis_title='Caballos de Fuerza (hp)',  # Título del eje Y
+    showlegend=False  # Ocultar la leyenda
+)
 
-# Layout - Using Tabs to Display Multiple Plots
-tab1, tab2, tab3 = st.tabs(["📌 HeatMap", "📊 Bar Chart", "📈 Line Chart"])
+fig3 = px.scatter(filtered_df, x="weight", y="mpg", color_discrete_sequence=px.colors.qualitative.Set1,
+                  size="horsepower", title="Relación entre Peso y MPG (Color por Origen)")
 
-with tab1:
-    st.plotly_chart(fig1, use_container_width=True)
 
-with tab2:
-    st.plotly_chart(fig2, use_container_width=True)
+## Arrange the plots in a grid layout
+col1, col2 = st.columns(2)  # Create 2 columns
 
-with tab3:
-    st.plotly_chart(fig3, use_container_width=True)
+with col1:
+    st.plotly_chart(fig1, use_container_width=True)  # First plot in first column
+
+with col2:
+    st.plotly_chart(fig2, use_container_width=True)  # Second plot in second column
+
+# Add the third plot in a full-width row below
+st.plotly_chart(fig3, use_container_width=True)
